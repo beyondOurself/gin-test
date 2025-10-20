@@ -138,38 +138,56 @@ func GetDataE(c *gin.Context) {
 // ---> S 绑定查询字符串或表单数据 <---
 
 type Persion2 struct {
-
-	Name  string `from:"name"`
-	Addres string `form:"address"`
+	Name     string    `from:"name"`
+	Addres   string    `form:"address"`
 	Birthday time.Time `form:"birthday" time_format:"2006-01-02"`
 }
 
-
-func startPage (c *gin.Context) { 
+func startPage(c *gin.Context) {
 
 	var person Persion2
 
-	if c.ShouldBind(&person) == nil { 
+	if c.ShouldBind(&person) == nil {
 
 		fmt.Printf(" person >>> %+v\n", person)
 
-		 log.Println(person.Name)
-		 log.Println(person.Addres)
-		 log.Println(person.Birthday)
+		log.Println(person.Name)
+		log.Println(person.Addres)
+		log.Println(person.Birthday)
 
 	}
-		fmt.Printf(" person >>> %+v\n", person)
+	fmt.Printf(" person >>> %+v\n", person)
 
-c.String(200, "Success")
+	c.String(200, "Success")
 
 }
 
-
 // ---> E 绑定查询字符串或表单数据 <---
+
+// ---> S 绑定 Uri <---
+
+type Person3 struct {
+	ID   string `uri:"id" binding:"required,uuid"`
+	Name string `uri:"name" binding:"required"`
+}
+
+// ---> E 绑定 Uri <---
 
 func main() {
 	// 创建带默认中间件（日志与恢复）的 Gin 路由器
 	r := gin.Default()
+
+	// ---> S 绑定 Uri <---
+	r.GET("/:name/:id", func(c *gin.Context) {
+		var person Person3
+		if err := c.ShouldBindUri(&person); err != nil {
+			c.JSON(400, gin.H{"msg": err.Error()})
+			return
+		}
+		c.JSON(200, gin.H{"name": person.Name, "uuid": person.ID})
+	})
+
+	// ---> E 绑定 Uri <---
 
 	// 定义简单的 GET 路由
 	r.POST("/ping", func(c *gin.Context) {
@@ -216,9 +234,10 @@ func main() {
 	// 监听 0.0.0.0:800（Windows 下为 localhost:8080）
 
 	// ---> S 绑定查询字符串或表单数据 <---
-			  
+
 	r.POST("/startPage", startPage)
 	// ---> E 绑定查询字符串或表单数据 <---
+	
 
-	r.Run()
+   r.Run(":8088")
 }
