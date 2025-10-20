@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <form action="/formHandler" method="POST">
+        <p>Check some colors</p>
+        <label for="red">Red</label>
+        <input type="checkbox" name="colors[]" value="red" id="red" />
+        <label for="green">Green</label>
+        <input type="checkbox" name="colors[]" value="green" id="green" />
+        <label for="blue">Blue</label>
+        <input type="checkbox" name="colors[]" value="blue" id="blue" />
+        <input type="submit" />
+      </form>
+    </div>
+  </body>
+</html>
